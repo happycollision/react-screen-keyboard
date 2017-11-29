@@ -16,14 +16,14 @@ export default class KeyboardButton extends PureComponent {
 		isDisabled: false,
 	};
 
-	handleClick = () => this.props.onClick(this.props.value)
+	handleClick = () => this.props.isDisabled ? null : this.props.onClick(this.props.value)
 
 	render() {
 		return (
 			<button
 				type="button"
 				className={`keyboard-button ${this.props.classes}`}
-				onClick={this.props.isDisabled ? null : this.handleClick}
+				onTouchStart={this.handleClick}
 				autoFocus={this.props.autofocus}
 				disabled={this.props.isDisabled}
 			>
