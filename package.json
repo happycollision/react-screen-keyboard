@@ -4,7 +4,7 @@
   "description": "React sreen keyboard",
   "main": "Keyboard.js",
   "scripts": {
-    "dist": "NODE_ENV=production webpack -p",
+    "dist": "webpack -p",
     "build": "babel ./src -d ./lib --source-maps",
     "lint": "eslint src/** webpack eslint --cache; exit 0",
     "lint:fix": "eslint src/** webpack eslint --cache --fix; exit 0"
