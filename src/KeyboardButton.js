@@ -19,18 +19,21 @@ export default class KeyboardButton extends PureComponent {
 	allowOnly = 0;
 
 	handleValidInput = () => {
+		console.log('valid input detected');
 		if (!this.props.isDisabled) {
 			this.props.onClick(this.props.value)
 		}
 	}
 
 	handleClickAttempt(e) {
+		console.log('click attempted');
 		if (this.allowOnly === 2) return;
 		if (this.allowOnly === 0) this.allowOnly = 1;
 		if (this.allowOnly === 1) this.handleValidInput();
 	}
 
 	handleTouchAttempt(e) {
+		console.log('touch attempted');
 		if (this.allowOnly === 1) return;
 		if (this.allowOnly === 0) this.allowOnly = 2;
 		if (this.allowOnly === 2) this.handleValidInput();
