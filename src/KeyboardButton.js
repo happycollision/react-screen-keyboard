@@ -16,14 +16,33 @@ export default class KeyboardButton extends PureComponent {
 		isDisabled: false,
 	};
 
-	handleClick = () => this.props.isDisabled ? null : this.props.onClick(this.props.value)
+	allowOnly = 0;
+
+	handleValidInput = () => {
+		if (!this.props.isDisabled) {
+			this.props.onClick(this.props.value)
+		}
+	}
+
+	handleClickAttempt(e) {
+		if (this.allowOnly === 2) return;
+		if (this.allowOnly === 0) this.allowOnly = 1;
+		if (this.allowOnly === 1) this.handleValidInput();
+	}
+
+	handleTouchAttempt(e) {
+		if (this.allowOnly === 1) return;
+		if (this.allowOnly === 0) this.allowOnly = 2;
+		if (this.allowOnly === 2) this.handleValidInput();
+	}
 
 	render() {
 		return (
 			<button
 				type="button"
 				className={`keyboard-button ${this.props.classes}`}
-				onTouchStart={this.handleClick}
+				onMouseUp={this.handleClickAttempt}
+				onTouchStart={this.handleTouchAttempt}
 				autoFocus={this.props.autofocus}
 				disabled={this.props.isDisabled}
 			>
