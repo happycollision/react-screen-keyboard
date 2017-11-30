@@ -2,7 +2,7 @@
   "name": "react-screen-keyboard",
   "version": "1.4.1",
   "description": "React sreen keyboard",
-  "main": "Keyboard.js",
+  "main": "lib/main.js",
   "scripts": {
     "dist": "webpack -p",
     "build": "babel ./src -d ./lib --source-maps",
