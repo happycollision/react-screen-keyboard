@@ -143,7 +143,7 @@ export default class Keyboard extends PureComponent {
 
 	renderKeyRows() {
 		const keys = this.getKeys();
-		return keys.map((row, i) => 
+		return keys.map((row, i) =>
 			<div className="keyboard-row" key={`row-${i}`}>
 				{i === keys.length - 1 &&
 					<KeyboardButton
@@ -175,7 +175,7 @@ export default class Keyboard extends PureComponent {
 		const {leftButtons, rightButtons} = this.props;
 		return (
 			<div className="keyboard numeric-keyboard">
-				{keys.map((row, i) => 
+				{keys.map((row, i) =>
 					<div className="keyboard-row" key={`row-${i}`}>
 						{row.map(button =>
 							<KeyboardButton
