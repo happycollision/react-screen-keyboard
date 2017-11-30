@@ -74,7 +74,11 @@ export default class Keyboard extends PureComponent {
 	handleLetterButtonClick = (key) => {
 		const {inputNode} = this.props;
 		const {value, selectionStart, selectionEnd} = inputNode;
-		const nextValue = value.substring(0, selectionStart) + key + value.substring(selectionEnd);
+		let nextValue;
+		let nextSelectionPosition;
+
+		nextValue = value.substring(0, selectionStart) + key + value.substring(selectionEnd);
+		nextSelectionPosition = selectionStart + 1;
 
 		this.changeValue(nextValue);
 		if (this.props.onClick) {
@@ -82,7 +86,7 @@ export default class Keyboard extends PureComponent {
 		}
 		setTimeout(() => {
 			inputNode.focus();
-			inputNode.setSelectionRange(selectionStart + 1, selectionStart + 1);
+			inputNode.setSelectionRange(nextSelectionPosition, nextSelectionPosition);
 		}, 0);
 		this.setState({uppercase: this.isUppercase()});
 		inputNode.dispatchEvent(new Event('input', {bubbles: true}));
@@ -93,6 +97,7 @@ export default class Keyboard extends PureComponent {
 		const {value, selectionStart, selectionEnd} = inputNode;
 		let nextValue;
 		let nextSelectionPosition;
+
 		if (selectionStart === selectionEnd) {
 			nextValue = value.substring(0, selectionStart - 1) + value.substring(selectionEnd);
 			nextSelectionPosition = selectionStart - 1;
