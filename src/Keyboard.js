@@ -19,6 +19,7 @@ export default class Keyboard extends PureComponent {
 		rightButtons: PropTypes.arrayOf(PropTypes.node),
 		inputNode: PropTypes.any.isRequired,
 		onClick: PropTypes.func,
+		onChange: PropTypes.func,
 		isFirstLetterUppercase: PropTypes.bool,
 		isNumeric: PropTypes.bool,
 		layouts: PropTypes.arrayOf(PropTypes.shape({
@@ -62,12 +63,20 @@ export default class Keyboard extends PureComponent {
 		this.props.inputNode.focus();
 	}
 
+	changeValue = (nextValue) => {
+		if (this.props.onChange) {
+			this.props.onChange(nextValue);
+		} else {
+			this.props.inputNode.value = nextValue;
+		}
+	}
+
 	handleLetterButtonClick = (key) => {
 		const {inputNode} = this.props;
 		const {value, selectionStart, selectionEnd} = inputNode;
 		const nextValue = value.substring(0, selectionStart) + key + value.substring(selectionEnd);
 
-		inputNode.value = nextValue;
+		this.changeValue(nextValue);
 		if (this.props.onClick) {
 			this.props.onClick(nextValue);
 		}
@@ -93,7 +102,7 @@ export default class Keyboard extends PureComponent {
 		}
 		nextSelectionPosition = (nextSelectionPosition > 0) ? nextSelectionPosition : 0;
 
-		inputNode.value = nextValue;
+		this.changeValue(nextValue);
 		if (this.props.onClick) {
 			this.props.onClick(nextValue);
 		}
