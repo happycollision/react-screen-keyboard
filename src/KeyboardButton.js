@@ -25,14 +25,14 @@ export default class KeyboardButton extends PureComponent {
 		}
 	}
 
-	handleClickAttempt(e) {
+	handleClickAttempt = (e) => {
 		console.log('click attempted');
 		if (allowOnly === 2) return;
 		if (allowOnly === 0) allowOnly = 1;
 		if (allowOnly === 1) this.handleValidInput();
 	}
 
-	handleTouchAttempt(e) {
+	handleTouchAttempt = (e) => {
 		console.log('touch attempted');
 		if (allowOnly === 1) return;
 		if (allowOnly === 0) allowOnly = 2;
