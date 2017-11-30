@@ -42,7 +42,7 @@ export default class KeyboardButton extends PureComponent {
 				type="button"
 				className={`keyboard-button ${this.props.classes}`}
 				onMouseUp={this.handleClickAttempt}
-				onTouchStart={this.handleTouchAttempt}
+				onTouchEnd={this.handleTouchAttempt}
 				autoFocus={this.props.autofocus}
 				disabled={this.props.isDisabled}
 			>
