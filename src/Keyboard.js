@@ -19,6 +19,7 @@ export default class Keyboard extends PureComponent {
 		rightButtons: PropTypes.arrayOf(PropTypes.node),
 		inputNode: PropTypes.any.isRequired,
 		onClick: PropTypes.func,
+		onChange: PropTypes.func,
 		isFirstLetterUppercase: PropTypes.bool,
 		isNumeric: PropTypes.bool,
 		layouts: PropTypes.arrayOf(PropTypes.shape({
@@ -62,28 +63,62 @@ export default class Keyboard extends PureComponent {
 		this.props.inputNode.focus();
 	}
 
-	handleLetterButtonClick = (key) => {
-		const {inputNode} = this.props;
-		const {value, selectionStart, selectionEnd} = inputNode;
-		const nextValue = value.substring(0, selectionStart) + key + value.substring(selectionEnd);
+	changeValue = (nextValue) => {
+		if (this.props.onChange) {
+			this.props.onChange(nextValue);
+		} else {
+			this.props.inputNode.value = nextValue;
+		}
 
-		inputNode.value = nextValue;
 		if (this.props.onClick) {
 			this.props.onClick(nextValue);
 		}
-		setTimeout(() => {
-			inputNode.focus();
-			inputNode.setSelectionRange(selectionStart + 1, selectionStart + 1);
-		}, 0);
-		this.setState({uppercase: this.isUppercase()});
-		inputNode.dispatchEvent(new Event('input', {bubbles: true}));
 	}
 
-	handleBackspaceClick = () => {
+	setCursor = (nextPos) => {
+		return new Promise(res => {
+			const {inputNode} = this.props;
+			setTimeout(() => {
+				inputNode.focus();
+				inputNode.setSelectionRange(nextPos, nextPos);
+				inputNode.dispatchEvent(new Event('input', {bubbles: true}));
+				res();
+			}, 0);
+		})
+	}
+
+	notifyNewState = (value, cursorPosition) => {
+		if (this.props.onUpdate) this.props.onUpdate({value, cursorPosition})
+	}
+
+	makeChangesToInput = (nextValue, nextPos) => {
+		this.changeValue(nextValue);
+		this.setCursor(nextPos)
+			.then(() => this.notifyNewState(nextValue, nextPos));
+	}
+
+	setKeyboardCase = () => {
+		this.setState({uppercase: this.isUppercase()});
+	}
+
+	getNextStateForLetterClick = (key) => {
 		const {inputNode} = this.props;
 		const {value, selectionStart, selectionEnd} = inputNode;
 		let nextValue;
 		let nextSelectionPosition;
+
+		nextValue = value.substring(0, selectionStart) + key + value.substring(selectionEnd);
+		nextSelectionPosition = selectionStart + 1;
+
+		return {value: nextValue, cursorPosition: nextSelectionPosition}
+	}
+
+	getNextStateForBackspaceClick = () => {
+		const {inputNode} = this.props;
+		const {value, selectionStart, selectionEnd} = inputNode;
+		let nextValue;
+		let nextSelectionPosition;
+
 		if (selectionStart === selectionEnd) {
 			nextValue = value.substring(0, selectionStart - 1) + value.substring(selectionEnd);
 			nextSelectionPosition = selectionStart - 1;
@@ -93,16 +128,19 @@ export default class Keyboard extends PureComponent {
 		}
 		nextSelectionPosition = (nextSelectionPosition > 0) ? nextSelectionPosition : 0;
 
-		inputNode.value = nextValue;
-		if (this.props.onClick) {
-			this.props.onClick(nextValue);
-		}
-		setTimeout(() => {
-			inputNode.focus();
-			inputNode.setSelectionRange(nextSelectionPosition, nextSelectionPosition);
-		}, 0);
-		this.setState({uppercase: this.isUppercase()});
-		inputNode.dispatchEvent(new Event('input', {bubbles: true}));
+		return {value: nextValue, cursorPosition: nextSelectionPosition}
+	}
+
+	handleLetterButtonClick = (key) => {
+		const next = this.getNextStateForLetterClick(key);
+		this.makeChangesToInput(next.value, next.cursorPosition);
+		this.setKeyboardCase();
+	}
+
+	handleBackspaceClick = () => {
+		const next = this.getNextStateForBackspaceClick();
+		this.makeChangesToInput(next.value, next.cursorPosition);
+		this.setKeyboardCase();
 	}
 
 	isUppercase() {
@@ -134,7 +172,7 @@ export default class Keyboard extends PureComponent {
 
 	renderKeyRows() {
 		const keys = this.getKeys();
-		return keys.map((row, i) => 
+		return keys.map((row, i) =>
 			<div className="keyboard-row" key={`row-${i}`}>
 				{i === keys.length - 1 &&
 					<KeyboardButton
@@ -166,7 +204,7 @@ export default class Keyboard extends PureComponent {
 		const {leftButtons, rightButtons} = this.props;
 		return (
 			<div className="keyboard numeric-keyboard">
-				{keys.map((row, i) => 
+				{keys.map((row, i) =>
 					<div className="keyboard-row" key={`row-${i}`}>
 						{row.map(button =>
 							<KeyboardButton
