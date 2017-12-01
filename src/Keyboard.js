@@ -87,6 +87,11 @@ export default class Keyboard extends PureComponent {
 		})
 	}
 
+	makeChangesToInput = (nextValue, nextCursorPos) => {
+		this.changeValue(nextValue);
+		this.setCursor(nextCursorPos);
+	}
+
 	setKeyboardCase = () => {
 		const {inputNode} = this.props;
 		this.setState({uppercase: this.isUppercase()});
@@ -101,8 +106,7 @@ export default class Keyboard extends PureComponent {
 		nextValue = value.substring(0, selectionStart) + key + value.substring(selectionEnd);
 		nextSelectionPosition = selectionStart + 1;
 
-		this.changeValue(nextValue);
-		this.setCursor(nextSelectionPosition);
+		this.makeChangesToInput(nextValue, nextSelectionPosition);
 		this.setKeyboardCase();
 	}
 
@@ -121,8 +125,7 @@ export default class Keyboard extends PureComponent {
 		}
 		nextSelectionPosition = (nextSelectionPosition > 0) ? nextSelectionPosition : 0;
 
-		this.changeValue(nextValue);
-		this.setCursor(nextSelectionPosition);
+		this.makeChangesToInput(nextValue, nextSelectionPosition);
 		this.setKeyboardCase();
 	}
 
