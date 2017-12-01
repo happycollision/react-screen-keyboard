@@ -2,7 +2,7 @@ var path = require('path');
 var webpack = require('webpack');
 
 module.exports = {
-  entry: "./Keyboard.js",
+  entry: "./src/Keyboard.js",
   devtool: "source-map",
   output: {
     path: path.join(__dirname, 'dist'),
