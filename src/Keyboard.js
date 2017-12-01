@@ -87,9 +87,14 @@ export default class Keyboard extends PureComponent {
 		})
 	}
 
-	makeChangesToInput = (nextValue, nextCursorPos) => {
+	notifyNewState = (value, cursorPosition) => {
+		if (this.props.onUpdate) this.props.onUpdate({value, cursorPosition})
+	}
+
+	makeChangesToInput = (nextValue, nextPos) => {
 		this.changeValue(nextValue);
-		this.setCursor(nextCursorPos);
+		this.setCursor(nextPos)
+			.then(() => this.notifyNewState(nextValue, nextPos));
 	}
 
 	setKeyboardCase = () => {
