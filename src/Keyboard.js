@@ -76,17 +76,20 @@ export default class Keyboard extends PureComponent {
 	}
 
 	setCursor = (nextPos) => {
-		const {inputNode} = this.props;
-		setTimeout(() => {
-			inputNode.focus();
-			inputNode.setSelectionRange(nextPos, nextPos);
-		}, 0);
+		return new Promise(res => {
+			const {inputNode} = this.props;
+			setTimeout(() => {
+				inputNode.focus();
+				inputNode.setSelectionRange(nextPos, nextPos);
+				inputNode.dispatchEvent(new Event('input', {bubbles: true}));
+				res();
+			}, 0);
+		})
 	}
 
-	setCaseAndDispatchEvent = () => {
+	setKeyboardCase = () => {
 		const {inputNode} = this.props;
 		this.setState({uppercase: this.isUppercase()});
-		inputNode.dispatchEvent(new Event('input', {bubbles: true}));
 	}
 
 	handleLetterButtonClick = (key) => {
@@ -100,7 +103,7 @@ export default class Keyboard extends PureComponent {
 
 		this.changeValue(nextValue);
 		this.setCursor(nextSelectionPosition);
-		this.setCaseAndDispatchEvent();
+		this.setKeyboardCase();
 	}
 
 	handleBackspaceClick = () => {
@@ -120,7 +123,7 @@ export default class Keyboard extends PureComponent {
 
 		this.changeValue(nextValue);
 		this.setCursor(nextSelectionPosition);
-		this.setCaseAndDispatchEvent();
+		this.setKeyboardCase();
 	}
 
 	isUppercase() {
