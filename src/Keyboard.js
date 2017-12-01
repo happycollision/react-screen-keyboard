@@ -69,6 +69,24 @@ export default class Keyboard extends PureComponent {
 		} else {
 			this.props.inputNode.value = nextValue;
 		}
+
+		if (this.props.onClick) {
+			this.props.onClick(nextValue);
+		}
+	}
+
+	setCursor = (nextPos) => {
+		const {inputNode} = this.props;
+		setTimeout(() => {
+			inputNode.focus();
+			inputNode.setSelectionRange(nextPos, nextPos);
+		}, 0);
+	}
+
+	setCaseAndDispatchEvent = () => {
+		const {inputNode} = this.props;
+		this.setState({uppercase: this.isUppercase()});
+		inputNode.dispatchEvent(new Event('input', {bubbles: true}));
 	}
 
 	handleLetterButtonClick = (key) => {
@@ -81,15 +99,8 @@ export default class Keyboard extends PureComponent {
 		nextSelectionPosition = selectionStart + 1;
 
 		this.changeValue(nextValue);
-		if (this.props.onClick) {
-			this.props.onClick(nextValue);
-		}
-		setTimeout(() => {
-			inputNode.focus();
-			inputNode.setSelectionRange(nextSelectionPosition, nextSelectionPosition);
-		}, 0);
-		this.setState({uppercase: this.isUppercase()});
-		inputNode.dispatchEvent(new Event('input', {bubbles: true}));
+		this.setCursor(nextSelectionPosition);
+		this.setCaseAndDispatchEvent();
 	}
 
 	handleBackspaceClick = () => {
@@ -108,15 +119,8 @@ export default class Keyboard extends PureComponent {
 		nextSelectionPosition = (nextSelectionPosition > 0) ? nextSelectionPosition : 0;
 
 		this.changeValue(nextValue);
-		if (this.props.onClick) {
-			this.props.onClick(nextValue);
-		}
-		setTimeout(() => {
-			inputNode.focus();
-			inputNode.setSelectionRange(nextSelectionPosition, nextSelectionPosition);
-		}, 0);
-		this.setState({uppercase: this.isUppercase()});
-		inputNode.dispatchEvent(new Event('input', {bubbles: true}));
+		this.setCursor(nextSelectionPosition);
+		this.setCaseAndDispatchEvent();
 	}
 
 	isUppercase() {
