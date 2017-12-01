@@ -98,7 +98,6 @@ export default class Keyboard extends PureComponent {
 	}
 
 	setKeyboardCase = () => {
-		const {inputNode} = this.props;
 		this.setState({uppercase: this.isUppercase()});
 	}
 
