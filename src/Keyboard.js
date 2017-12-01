@@ -97,7 +97,7 @@ export default class Keyboard extends PureComponent {
 		this.setState({uppercase: this.isUppercase()});
 	}
 
-	handleLetterButtonClick = (key) => {
+	getNextStateForLetterClick = (key) => {
 		const {inputNode} = this.props;
 		const {value, selectionStart, selectionEnd} = inputNode;
 		let nextValue;
@@ -106,11 +106,10 @@ export default class Keyboard extends PureComponent {
 		nextValue = value.substring(0, selectionStart) + key + value.substring(selectionEnd);
 		nextSelectionPosition = selectionStart + 1;
 
-		this.makeChangesToInput(nextValue, nextSelectionPosition);
-		this.setKeyboardCase();
+		return {value: nextValue, cursorPosition: nextSelectionPosition}
 	}
 
-	handleBackspaceClick = () => {
+	getNextStateForBackspaceClick = () => {
 		const {inputNode} = this.props;
 		const {value, selectionStart, selectionEnd} = inputNode;
 		let nextValue;
@@ -125,7 +124,18 @@ export default class Keyboard extends PureComponent {
 		}
 		nextSelectionPosition = (nextSelectionPosition > 0) ? nextSelectionPosition : 0;
 
-		this.makeChangesToInput(nextValue, nextSelectionPosition);
+		return {value: nextValue, cursorPosition: nextSelectionPosition}
+	}
+
+	handleLetterButtonClick = (key) => {
+		const next = this.getNextStateForLetterClick(key);
+		this.makeChangesToInput(next.value, next.cursorPosition);
+		this.setKeyboardCase();
+	}
+
+	handleBackspaceClick = () => {
+		const next = this.getNextStateForBackspaceClick();
+		this.makeChangesToInput(next.value, next.cursorPosition);
 		this.setKeyboardCase();
 	}
 
