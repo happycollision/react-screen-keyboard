@@ -1,5 +1,11 @@
 # react-screen-keyboard
 
+> Note: This is a fork of an existing project. I have not yet updated any documentation to reflect
+> my changes. Also note that the `package.json` file is not version-synced with the original repo.
+> I am maintaining Semver, though. See [this comment on one of my commits][comment] for more info.
+
+[comment]: https://github.com/happycollision/react-screen-keyboard/commit/2bcb6a8587ffe112623674ba560e4c363212e10a#commitcomment-26122388
+
 [![NPM version][npm-image]][npm-url]
 [![npm download][download-image]][download-url]
 
